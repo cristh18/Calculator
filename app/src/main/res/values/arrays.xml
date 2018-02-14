@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="options">
+        <item>@string/option_clear</item>
+        <item>@string/option_delete</item>
+        <item>@string/option_percentage</item>
+        <item>@string/option_division</item>
+        <item>@string/option_seven</item>
+        <item>@string/option_eight</item>
+        <item>@string/option_nine</item>
+        <item>@string/option_product</item>
+        <item>@string/option_four</item>
+        <item>@string/option_five</item>
+        <item>@string/option_six</item>
+        <item>@string/option_minus</item>
+        <item>@string/option_one</item>
+        <item>@string/option_two</item>
+        <item>@string/option_three</item>
+        <item>@string/option_plus</item>
+        <item>@string/option_zero</item>
+        <item>@string/option_point</item>
+        <item>@string/option_answer</item>
+        <item>@string/option_equals</item>
+    </array>
+
+</resources>
