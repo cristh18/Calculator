@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity(), CalculatorAdapter.ViewHolder.OptionLis
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: CalculatorAdapter
 
+    private val operators: MutableList<String> by lazy { getCalculatorOperators() }
     private var currentOperation: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,36 +52,17 @@ class MainActivity : AppCompatActivity(), CalculatorAdapter.ViewHolder.OptionLis
     override fun optionSelected(value: String) {
         currentOperation += value
         editText.setText(currentOperation)
-//        if (getOperators().contains(value) && value == getString(R.string.option_equals)) {
 
-        if (getOperators().contains(value)) {
-
-
+        if (operators.contains(value)) {
             val pattern = Pattern.compile("([\\/\\+\\-\\*])")
             val matcher = pattern.matcher(currentOperation)
             if (matcher.find()) {
                 Log.e(this::javaClass.name, "Numbers: ".plus(currentOperation))
                 val operator = matcher.group(1)
                 Log.e(this::javaClass.name, "Operator: ".plus(operator))
-                val numbers = currentOperation.split(operator)
-
-//                if (numbers.size < 3 && !TextUtils.isEmpty(numbers[0]) && !TextUtils.isEmpty(numbers[1])) {
-//                    currentOperation = getResult(operator, numbers).toString()
-//                } else if (numbers.size >= 3) {
-//                    currentOperation += (numbers[2])
-//                }
-
-                if (numbers.size == 2) {
-                    if (!TextUtils.isEmpty(numbers[0]) && !TextUtils.isEmpty(numbers[1])) {
-                        currentOperation = getResult(operator, numbers).toString()
-                    }
-                } else {
-//                    if (!TextUtils.isEmpty(numbers[0]) && !TextUtils.isEmpty(numbers[1]) && TextUtils.isEmpty(numbers[2])) {
-//                        val lastWord = currentOperation.substring(currentOperation.length - 1, currentOperation.length)
-//                        optionSelected(lastWord)
-//                    }
-                }
-
+                var numbers = currentOperation.split(operator)
+                numbers = getValidNumbers(numbers)
+                currentOperation = getResult(operator, numbers).toString().plus(value)
                 editText.setText(currentOperation)
             }
         } else if (value == getString(R.string.option_clear)) {
@@ -93,7 +75,7 @@ class MainActivity : AppCompatActivity(), CalculatorAdapter.ViewHolder.OptionLis
     private fun getResult(operator: String, numbers: List<String>): Double {
         var res = 0.0
         when (operator) {
-            getString(R.string.option_plus) -> res = sum(numbers[0].toDouble(), numbers[1].toDouble())
+            getString(R.string.option_plus) -> res = sum(numbers)
             getString(R.string.option_minus) -> res = subtract(numbers[0].toDouble(), numbers[1].toDouble())
             getString(R.string.option_product) -> res = multiply(numbers[0].toDouble(), numbers[1].toDouble())
             getString(R.string.option_division) -> res = divide(numbers[0].toDouble(), numbers[1].toDouble())
@@ -101,7 +83,7 @@ class MainActivity : AppCompatActivity(), CalculatorAdapter.ViewHolder.OptionLis
         return res
     }
 
-    private fun getOperators(): MutableList<String> {
+    private fun getCalculatorOperators(): MutableList<String> {
         val operators = mutableListOf<String>()
         operators.add(getString(R.string.option_plus))
         operators.add(getString(R.string.option_minus))
@@ -112,11 +94,19 @@ class MainActivity : AppCompatActivity(), CalculatorAdapter.ViewHolder.OptionLis
         return operators
     }
 
-    private fun sum(numberA: Double, numberB: Double) = numberA + numberB
+    private fun sum(numbers: List<String>) : Double{
+        return numbers.sumByDouble { it.toDouble() }
+    }
 
     private fun subtract(numberA: Double, numberB: Double) = numberA - numberB
 
     private fun multiply(numberA: Double, numberB: Double) = numberA * numberB
 
     private fun divide(numberA: Double, numberB: Double) = numberA / numberB
+
+    private fun getValidNumbers(numbers: List<String>): MutableList<String> {
+        return numbers
+                .filter { !TextUtils.isEmpty(it) && !operators.contains(it) }
+                .toMutableList()
+    }
 }
